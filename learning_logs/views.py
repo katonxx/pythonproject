@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
-
+from django.shortcuts import render, get_object_or_404, redirect
 def index(request):
     return render(request,"learning_logs/index.html")
 
@@ -52,18 +52,17 @@ def new_entry(request, topic_id):
     return render(request, "learning_logs/new_entry.html", context)
 
 @login_required
-def edit_entry(request,entry_id):
-    entry = Entry.objects.get(id=entry_id)
+def edit_entry(request, entry_id):
+    entry = get_object_or_404(Entry, id=entry_id)  # Получаем объект или 404
     topic = entry.topic
-    if topic.owner != request:
-        raise Http404
 
-    if request.method != "POST":
-        form = EntryForm(instance=entry)
-    else:
-        form = EntryForm(instance=entry, data=request.POST)
+    if request.method == 'POST':
+        form = EntryForm(request.POST, instance=entry)
         if form.is_valid():
             form.save()
-            return redirect("learning_logs:topic",topic_id=topic.id)
-    context = {"entry": entry, "topic": topic, "form": form}
-    return render(request, "learning_logs/edit_entry.html",context)
+            return redirect('learning_logs:topic', topic_id=topic.id)
+    else:
+        form = EntryForm(instance=entry)
+
+    context = {'entry': entry, 'topic': topic, 'form': form}
+    return render(request, 'learning_logs/edit_entry.html', context)

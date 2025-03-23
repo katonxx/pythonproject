@@ -1,22 +1,24 @@
 
-
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-6zh$_(8jrs@&1n8j652#-b1gjsv^mq*76)7l__z9xnw387nl+&'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-6zh$_(8jrs@&1n8j652#-b1gjsv^mq*76)7l__z9xnw387nl+&')
 
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 LOGIN_URL = '/users/login/'
 
-import django_heroku
-django_heroku.settings(locals())
 
 INSTALLED_APPS = [
     'learning_logs',
@@ -32,6 +34,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -73,6 +76,7 @@ DATABASES = {
 
 
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -93,7 +97,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -102,7 +106,6 @@ USE_TZ = True
 
 
 
-STATIC_URL = 'static/'
 
 
 
