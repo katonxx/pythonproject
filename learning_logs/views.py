@@ -53,7 +53,7 @@ def new_entry(request, topic_id):
 
 @login_required
 def edit_entry(request, entry_id):
-    entry = get_object_or_404(Entry, id=entry_id)  # Получаем объект или 404
+    entry = get_object_or_404(Entry, id=entry_id)
     topic = entry.topic
 
     if request.method == 'POST':
